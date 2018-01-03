@@ -1,3 +1,4 @@
 passwords.go
-copy-passwords.sh
+deploy.sh
+relay.conf
 
