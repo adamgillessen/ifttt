@@ -9,6 +9,8 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println("Starting IFTTT relay..")
 	http.HandleFunc("/minecraft", handleMinecraft)
 	log.Fatal(http.ListenAndServe("0.0.0.0:6969", nil))
 }
