@@ -1,4 +1,3 @@
-passwords.go
 deploy.sh
 relay.conf
-
+config.json
