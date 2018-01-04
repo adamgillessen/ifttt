@@ -8,11 +8,35 @@ import (
 	"net/http"
 )
 
+var conf *config
+
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Starting IFTTT relay..")
+
+	if err := loadConfiguration(); err != nil {
+		log.Fatalf("Failed to load configuration: %v", err)
+	}
+
 	http.HandleFunc("/minecraft", handleMinecraft)
 	log.Fatal(http.ListenAndServe("0.0.0.0:6969", nil))
+}
+
+type config struct {
+	WebhookKey string
+}
+
+func loadConfiguration() error {
+	data, err := ioutil.ReadFile("config.json")
+	if err != nil {
+		return fmt.Errorf("failed to read json configuration file: %v", err)
+	}
+
+	conf = &config{}
+	if err := json.Unmarshal(data, conf); err != nil {
+		return fmt.Errorf("failed to unmarshal config JSON: %v", err)
+	}
+	return nil
 }
 
 func handleMinecraft(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +76,7 @@ func handleMinecraft(w http.ResponseWriter, r *http.Request) {
 
 	numPlayers := len(q.Players)
 	url := fmt.Sprintf("https://maker.ifttt.com/trigger/minecraft/with/key/%s?value1=%d",
-		IFTTTWebhookKey, numPlayers)
+		conf.WebhookKey, numPlayers)
 	resp, err = http.Get(url)
 	if err != nil {
 		err := fmt.Sprintf("Failed to make webhook trigger: %v", err)
