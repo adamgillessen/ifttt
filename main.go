@@ -19,11 +19,12 @@ func main() {
 	}
 
 	http.HandleFunc("/minecraft", handleMinecraft)
-	log.Fatal(http.ListenAndServe("0.0.0.0:6969", nil))
+	log.Fatal(http.ListenAndServe(conf.ServerAddress, nil))
 }
 
 type config struct {
-	WebhookKey string
+	WebhookKey    string
+	ServerAddress string
 }
 
 func loadConfiguration() error {
