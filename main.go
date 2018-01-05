@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os/exec"
 	"strings"
 )
@@ -145,7 +146,7 @@ func errCode(w http.ResponseWriter, msg string, code int) {
 // sendToPhone sends a notification to my phone through a webhook
 func sendToPhone(msg string) error {
 	url := fmt.Sprintf("https://maker.ifttt.com/trigger/notification/with/key/%s?value1=%s",
-		conf.WebhookKey, msg)
+		conf.WebhookKey, url.QueryEscape(msg))
 	resp, err := http.Get(url)
 	if err != nil {
 		return fmt.Errorf("Failed to make webhook trigger: %v", err)
