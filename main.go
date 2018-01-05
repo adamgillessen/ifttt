@@ -26,10 +26,11 @@ func main() {
 }
 
 type config struct {
-	WebhookKey    string
-	ServerAddress string
-	WebtextBinary string
-	HeadlessEnv   string
+	WebhookKey        string
+	ServerAddress     string
+	WebtextBinary     string
+	WebtextConfigPath string
+	HeadlessEnv       string
 }
 
 // loadConfiguration loads the JSON configuration file
@@ -69,7 +70,8 @@ func handleWebtext(w http.ResponseWriter, r *http.Request) {
 		rec = tmp[0]
 		msg = tmp[1]
 	)
-	cmd := exec.Command(conf.WebtextBinary, "-v", "-s="+conf.HeadlessEnv, "-r="+rec, msg)
+	cmd := exec.Command(conf.WebtextBinary,
+		"-v", "-c="+conf.WebtextConfigPath, "-s="+conf.HeadlessEnv, "-r="+rec, msg)
 	if out, err := cmd.CombinedOutput(); err != nil {
 		errCode(w, fmt.Sprintf(
 			"failed to run webtext command: %s", strings.Trim(string(out), "\n")), 500)
